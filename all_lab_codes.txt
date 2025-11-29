@@ -37,127 +37,6 @@ module q1;
 endmodule
 
 --------------------------------------------------
-File: q10.v
---------------------------------------------------
-`timescale 1ns/1ns
-`include "q10_f.v"
-
-module q10;
-    reg d;
-    reg clk;
-    wire q;
-    wire q_bar;
-
-    d_flipflop uut(.d(d), .clk(clk), .q(q), .q_bar(q_bar));
-
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    initial begin
-        $dumpfile("q10_g.vcd");
-        $dumpvars(0, q10);
-        $monitor("t=%0t | clk=%b | d=%b | q=%b | q_bar=%b", $time, clk, d, q, q_bar);
-
-        d = 1'b0;
-        #10;
-        d = 1'b0;
-        #10;
-        d = 1'b1;
-        #10;
-        d = 1'b1;
-        #10;
-
-        $display("Test Complete");
-        $finish;
-    end
-endmodule
-
---------------------------------------------------
-File: q10_f.v
---------------------------------------------------
-module d_flipflop(
-    input d,
-    input clk,
-    output reg q,
-    output q_bar
-);
-
-    assign q_bar = ~q;
-
-    always @(posedge clk) begin
-        q<=d;
-    end
-endmodule
-
---------------------------------------------------
-File: q11.v
---------------------------------------------------
-`timescale 1ns/1ns
-`include "q11_f.v"
-
-module q11;
-    reg j;
-    reg k;
-    reg clk;
-    wire q;
-    wire q_bar;
-
-    jk_flip_flop uut(.j(j), .k(k), .clk(clk), .q(q), .q_bar(q_bar));
-
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    initial begin
-        $dumpfile("q11_g.vcd");
-        $dumpvars(0, q11);
-        $monitor("t=%0t | clk=%b | j=%b | k=%b | q=%b | q_bar=%b", $time, clk, j, k, q, q_bar);
-
-        j = 1'b0; k = 1'b0;
-        #10;
-        j = 1'b0; k = 1'b0; 
-        #10;
-        j = 1'b0; k = 1'b1;
-        #10;
-        j = 1'b0; k = 1'b1;
-        #10;
-        j = 1'b1; k = 1'b0; 
-        #10;
-        j = 1'b1; k = 1'b0; 
-        #10;
-        j = 1'b1; k = 1'b1;
-        #10;
-        j = 1'b1; k = 1'b1; 
-        #10;
-
-        $display("Test Complete");
-        $finish;
-    end
-endmodule
-
---------------------------------------------------
-File: q11_f.v
---------------------------------------------------
-module jk_flip_flop(
-    input j,
-    input k,
-    input clk,
-    output reg q,
-    output q_bar
-);
-
-    assign q_bar = ~q;
-
-    always @(posedge clk) begin
-        q <= (j & ~q) | (~k & q);
-    end
-
-endmodule
-
---------------------------------------------------
 File: q1f.v
 --------------------------------------------------
 module logic_unit (
@@ -653,3 +532,123 @@ module encoder(
 
 endmodule
 
+--------------------------------------------------
+File: q10.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q10_f.v"
+
+module q10;
+    reg d;
+    reg clk;
+    wire q;
+    wire q_bar;
+
+    d_flipflop uut(.d(d), .clk(clk), .q(q), .q_bar(q_bar));
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    initial begin
+        $dumpfile("q10_g.vcd");
+        $dumpvars(0, q10);
+        $monitor("t=%0t | clk=%b | d=%b | q=%b | q_bar=%b", $time, clk, d, q, q_bar);
+
+        d = 1'b0;
+        #10;
+        d = 1'b0;
+        #10;
+        d = 1'b1;
+        #10;
+        d = 1'b1;
+        #10;
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q10_f.v
+--------------------------------------------------
+module d_flipflop(
+    input d,
+    input clk,
+    output reg q,
+    output q_bar
+);
+
+    assign q_bar = ~q;
+
+    always @(posedge clk) begin
+        q<=d;
+    end
+endmodule
+
+--------------------------------------------------
+File: q11.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q11_f.v"
+
+module q11;
+    reg j;
+    reg k;
+    reg clk;
+    wire q;
+    wire q_bar;
+
+    jk_flip_flop uut(.j(j), .k(k), .clk(clk), .q(q), .q_bar(q_bar));
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    initial begin
+        $dumpfile("q11_g.vcd");
+        $dumpvars(0, q11);
+        $monitor("t=%0t | clk=%b | j=%b | k=%b | q=%b | q_bar=%b", $time, clk, j, k, q, q_bar);
+
+        j = 1'b0; k = 1'b0;
+        #10;
+        j = 1'b0; k = 1'b0; 
+        #10;
+        j = 1'b0; k = 1'b1;
+        #10;
+        j = 1'b0; k = 1'b1;
+        #10;
+        j = 1'b1; k = 1'b0; 
+        #10;
+        j = 1'b1; k = 1'b0; 
+        #10;
+        j = 1'b1; k = 1'b1;
+        #10;
+        j = 1'b1; k = 1'b1; 
+        #10;
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q11_f.v
+--------------------------------------------------
+module jk_flip_flop(
+    input j,
+    input k,
+    input clk,
+    output reg q,
+    output q_bar
+);
+
+    assign q_bar = ~q;
+
+    always @(posedge clk) begin
+        q <= (j & ~q) | (~k & q);
+    end
+
+endmodule
