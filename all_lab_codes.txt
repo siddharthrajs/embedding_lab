@@ -1,0 +1,655 @@
+--------------------------------------------------
+File: q1.v
+--------------------------------------------------
+`timescale 1ns / 1ns
+`include "q1f.v"
+
+module q1;
+    reg x;
+    reg y;
+
+    wire z;
+
+    logic_unit uut(x,y,z);
+
+    initial begin
+        $dumpfile("q1_g.vcd");
+        $dumpvars(0,q1);
+
+        x=0;
+        y=0;
+
+        #10
+        x=1;
+        #10
+        y=1;
+        #10
+        x=0;
+
+        #10
+        $display("Test Complete");
+
+        end
+
+        initial begin
+            $monitor ("x=%b , y=%b , z=%b", x,y,z);
+        end
+endmodule
+
+--------------------------------------------------
+File: q10.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q10_f.v"
+
+module q10;
+    reg d;
+    reg clk;
+    wire q;
+    wire q_bar;
+
+    d_flipflop uut(.d(d), .clk(clk), .q(q), .q_bar(q_bar));
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    initial begin
+        $dumpfile("q10_g.vcd");
+        $dumpvars(0, q10);
+        $monitor("t=%0t | clk=%b | d=%b | q=%b | q_bar=%b", $time, clk, d, q, q_bar);
+
+        d = 1'b0;
+        #10;
+        d = 1'b0;
+        #10;
+        d = 1'b1;
+        #10;
+        d = 1'b1;
+        #10;
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q10_f.v
+--------------------------------------------------
+module d_flipflop(
+    input d,
+    input clk,
+    output reg q,
+    output q_bar
+);
+
+    assign q_bar = ~q;
+
+    always @(posedge clk) begin
+        q<=d;
+    end
+endmodule
+
+--------------------------------------------------
+File: q11.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q11_f.v"
+
+module q11;
+    reg j;
+    reg k;
+    reg clk;
+    wire q;
+    wire q_bar;
+
+    jk_flip_flop uut(.j(j), .k(k), .clk(clk), .q(q), .q_bar(q_bar));
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    initial begin
+        $dumpfile("q11_g.vcd");
+        $dumpvars(0, q11);
+        $monitor("t=%0t | clk=%b | j=%b | k=%b | q=%b | q_bar=%b", $time, clk, j, k, q, q_bar);
+
+        j = 1'b0; k = 1'b0;
+        #10;
+        j = 1'b0; k = 1'b0; 
+        #10;
+        j = 1'b0; k = 1'b1;
+        #10;
+        j = 1'b0; k = 1'b1;
+        #10;
+        j = 1'b1; k = 1'b0; 
+        #10;
+        j = 1'b1; k = 1'b0; 
+        #10;
+        j = 1'b1; k = 1'b1;
+        #10;
+        j = 1'b1; k = 1'b1; 
+        #10;
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q11_f.v
+--------------------------------------------------
+module jk_flip_flop(
+    input j,
+    input k,
+    input clk,
+    output reg q,
+    output q_bar
+);
+
+    assign q_bar = ~q;
+
+    always @(posedge clk) begin
+        q <= (j & ~q) | (~k & q);
+    end
+
+endmodule
+
+--------------------------------------------------
+File: q1f.v
+--------------------------------------------------
+module logic_unit (
+    input x,
+    input y,
+    output z
+);
+
+    assign z = ~x;
+
+endmodule
+
+
+// And : z=(x&y)
+// Or : z=(x|y)
+// Nand : z=~(x&y)
+// Nor : z=~(x|y)
+// Xor : z=(x&~y)|(~x&y)
+// XNor : z=(x&y)|(~x&~y)
+
+--------------------------------------------------
+File: q2.v
+--------------------------------------------------
+`timescale 1ns / 1ns
+`include "q2_f.v"
+
+module q2;
+    reg x;
+    reg y;
+
+    wire z;
+    wire c;
+
+    logic_unit uut(x,y,z,c);
+
+    initial begin
+        $dumpfile("q2_g.vcd");
+        $dumpvars(0,q2);
+
+        x=0;
+        y=0;
+
+        #10
+        x=1;
+        #10
+        y=1;
+        #10
+        x=0;
+
+        #10
+        $display("Test Complete");
+        $finish;
+
+        end
+
+        initial begin
+            $monitor ("x=%b , y=%b , z=%b, c=%b", x,y,z,c);
+        end
+endmodule
+
+--------------------------------------------------
+File: q2_f.v
+--------------------------------------------------
+module logic_unit (
+    input x,
+    input y,
+    output z,
+    output c
+);
+
+    assign z = (x&~y)|(~x&y);  // x^y
+    assign c= x&y;
+
+endmodule;
+
+--------------------------------------------------
+File: q3.v
+--------------------------------------------------
+`timescale 1ns / 1ns
+`include "q3_f.v"
+
+module q3;
+    reg x;
+    reg y;
+    reg z;
+
+    wire sum;
+    wire carry;
+
+    logic_unit uut(x,y,z, sum, carry);
+
+    initial begin
+        $dumpfile("q3_g.vcd");
+        $dumpvars(0,q3);
+
+        x=0;
+        y=0;
+        z=0;
+        
+        #5 z=1;
+        #5 y=1;
+        #5 z=0;
+        #5 y=0;
+
+        #5 x=1;
+        #5 z=1;
+        #5 y=1;
+        #5 z=0;
+        #5
+        $display("Test Complete");
+        $finish;
+        end
+
+        initial begin
+            $monitor ("x=%b , y=%b , z=%b, sum=%b, carry=%b", x,y,z,sum,carry);
+        end
+endmodule
+
+--------------------------------------------------
+File: q3_f.v
+--------------------------------------------------
+module logic_unit (
+    input x,
+    input y,
+    input z,
+    output sum,
+    output carry
+);
+
+    assign sum = (~x & ~y & z) |
+               (~x & y  & ~z) |
+               (x  & ~y & ~z) |
+               (x  & y  & z);
+               
+    assign carry =  (x & y) | 
+               (x & z) | 
+               (y & z);
+
+endmodule;
+
+--------------------------------------------------
+File: q4.v
+--------------------------------------------------
+`timescale 1ns / 1ns
+`include "q4_f.v"
+
+module q4;
+    reg x;
+    reg y;
+
+    wire diff;
+    wire borrow;
+
+    logic_unit uut(x,y,diff,borrow);
+
+    initial begin
+        $dumpfile("q4_g.vcd");
+        $dumpvars(0,q4);
+
+        x=0;
+        y=0;
+
+        #10 x=1;
+        #10 y=1;
+        #10 x=0;
+
+        #10
+        $display("Test Complete");
+        $finish;
+
+        end
+
+        initial begin
+            $monitor ("x=%b , y=%b , diff=%b, borrow=%b", x,y,diff,borrow);
+        end
+endmodule
+
+--------------------------------------------------
+File: q4_f.v
+--------------------------------------------------
+module logic_unit (
+    input x,
+    input y,
+    output diff,
+    output borrow
+);
+
+    assign diff = (x&~y)|(~x&y);
+    assign borrow = (~x&y);
+
+endmodule
+
+--------------------------------------------------
+File: q5.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q5_f.v"
+
+module q5;
+    reg  [3:0] b;
+    wire [3:0] s;
+
+    bcd_to_excess3 uut (
+        .b3(b[3]), .b2(b[2]), .b1(b[1]), .b0(b[0]),
+        .s3(s[3]), .s2(s[2]), .s1(s[1]), .s0(s[0])
+    );
+
+    initial begin
+        $dumpfile("q5_g.vcd");
+        $dumpvars(0, q5);
+        $display("dec |  b3 b2 b1 b0  |  s3 s2 s1 s0  | expected");
+        // test valid BCD 0..9
+        repeat (10) begin
+            $display("%2d  |  %b  |  %b  |  %b", $time/10, b, s, b + 3);
+            #10 b = b + 1;
+        end
+        #10 $display("Test Complete");
+        $finish;
+    end
+
+    initial begin
+        b = 4'b0000;
+    end
+endmodule
+
+--------------------------------------------------
+File: q5_f.v
+--------------------------------------------------
+module bcd_to_excess3(
+    input  wire b3,
+    input  wire b2,
+    input  wire b1,
+    input  wire b0,
+    output wire s3,
+    output wire s2,
+    output wire s1,
+    output wire s0
+);
+
+    wire carry1;
+    wire carry2;
+
+    assign s0     = ~b0;
+    
+    assign s1     = ~(b1 ^ b0);      // XNOR
+    
+    assign carry1 = b1 | b0;
+    assign s2     = b2 ^ carry1;
+    assign carry2 = b2 & carry1;
+    assign s3     = b3 ^ carry2;
+
+endmodule
+
+--------------------------------------------------
+File: q6.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q6_f.v"
+
+module tb;
+    reg  I0, I1, I2, I3; // reg [3:0] I;
+    reg  [1:0] S;
+    wire Y;
+
+    mux4to1_struct uut (
+        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
+        .S1(S[1]), .S0(S[0]),
+        .Y(Y)
+    );
+
+    initial begin
+        $dumpfile("q6_g.vcd");
+        $dumpvars(0, tb);
+        $display("S1 S0 | I3 I2 I1 I0 | Y");
+
+        I3=1; I2=0; I1=1; I0=0;
+
+        S = 2'b00; #10;
+        $display("%b    | %b %b %b %b | %b", S, I3,I2,I1,I0, Y);
+
+        S = 2'b01; #10;
+        $display("%b    | %b %b %b %b | %b", S, I3,I2,I1,I0, Y);
+
+        S = 2'b10; #10;
+        $display("%b    | %b %b %b %b | %b", S, I3,I2,I1,I0, Y);
+
+        S = 2'b11; #10;
+        $display("%b    | %b %b %b %b | %b", S, I3,I2,I1,I0, Y);
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q6_f.v
+--------------------------------------------------
+module mux4to1_struct(
+    input  I0,
+    input  I1,
+    input  I2,
+    input  I3,
+    input  S1,
+    input  S0,
+    output Y
+);
+
+    wire nS1, nS0;
+    wire w0, w1, w2, w3;
+
+    assign nS1 = ~S1;
+    assign nS0 = ~S0;
+
+    assign w0 = nS1 & nS0 & I0; // select 00
+    assign w1 = nS1 & S0  & I1; // select 01
+    assign w2 = S1  & nS0 & I2; // select 10
+    assign w3 = S1  & S0  & I3; // select 11
+
+    assign Y = w0 | w1 | w2 | w3; // OR all outputs
+endmodule
+
+--------------------------------------------------
+File: q7.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q7_f.v"    
+
+module q7;
+    reg D;
+    reg [1:0] S;
+    reg EN;
+    wire Y3, Y2, Y1, Y0;
+ 
+    demux1to4 uut (
+        .D(D), .S(S), .EN(EN),
+        .Y3(Y3), .Y2(Y2), .Y1(Y1), .Y0(Y0)
+    );
+
+    initial begin
+        $dumpfile("q7_g.vcd");
+        $dumpvars(0, q7);
+        $display("t | EN D S1 S0 | Y3 Y2 Y1 Y0");
+
+
+        EN = 0; D = 1'b1; S = 2'b00; #5;
+        $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+
+
+        EN = 1; D = 1'b1;
+        S = 2'b00; #5; $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+        S = 2'b01; #5; $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+        S = 2'b10; #5; $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+        S = 2'b11; #5; $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+
+
+        D = 1'b0; S = 2'b10; #5; $display("%0t |  %b  %b  %b %b |  %b  %b  %b  %b", $time, EN, D, S[1], S[0], Y3, Y2, Y1, Y0);
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q7_f.v
+--------------------------------------------------
+module demux1to4 (
+    input  wire D,
+    input  wire [1:0] S,
+    input  wire EN,
+    output wire Y3,
+    output wire Y2,
+    output wire Y1,
+    output wire Y0
+);
+
+    assign Y0 = EN & (~S[1]) & (~S[0]) & D;  
+    assign Y1 = EN & (~S[1]) & ( S[0]) & D; 
+    assign Y2 = EN & ( S[1]) & (~S[0]) & D;  
+    assign Y3 = EN & ( S[1]) & ( S[0]) & D;  
+
+endmodule
+
+--------------------------------------------------
+File: q8.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q8_f.v"
+
+module q8;
+    reg [1:0] a;
+    reg en;
+    wire [3:0] y;
+
+    decoder uut(.a(a), .en(en), .y(y));
+
+    initial begin
+        $dumpfile("q8_g.vcd");
+        $dumpvars(0, q8);
+        $display("t | en a1 a0 | y3 y2 y1 y0");
+        
+        en = 0; a = 2'b00; #5; $display("%0t |  %b  %b  %b |  %b  %b  %b  %b", $time, en, a[1], a[0], y[3], y[2], y[1], y[0]);
+        en = 1; a = 2'b00; #5; $display("%0t |  %b  %b  %b |  %b  %b  %b  %b", $time, en, a[1], a[0], y[3], y[2], y[1], y[0]);
+        en = 1; a = 2'b01; #5; $display("%0t |  %b  %b  %b |  %b  %b  %b  %b", $time, en, a[1], a[0], y[3], y[2], y[1], y[0]);
+        en = 1; a = 2'b10; #5; $display("%0t |  %b  %b  %b |  %b  %b  %b  %b", $time, en, a[1], a[0], y[3], y[2], y[1], y[0]);
+        en = 1; a = 2'b11; #5; $display("%0t |  %b  %b  %b |  %b  %b  %b  %b", $time, en, a[1], a[0], y[3], y[2], y[1], y[0]);
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q8_f.v
+--------------------------------------------------
+module decoder(
+    input [1:0] a,
+    input en,
+    output [3:0] y
+);
+
+assign y[0] = en & !a[1] & !a[0];
+assign y[1] = en & !a[1] & a[0];
+assign y[2] = en & a[1] & !a[0];
+assign y[3] = en & a[1] & a[0];
+
+endmodule
+
+--------------------------------------------------
+File: q9.v
+--------------------------------------------------
+`timescale 1ns/1ns
+`include "q9_f.v"
+
+module q9;
+    reg [3:0] a;
+    wire [1:0] y;
+
+    encoder uut(.a(a), .y(y));
+
+    initial begin
+        $dumpfile("q9_g.vcd");
+        $dumpvars(0, q9);
+        $monitor("t=%0t | a=%b | y=%b", $time, a, y);
+
+        a = 4'b0000;
+        #10;
+        a = 4'b0001;
+        #10;
+        a = 4'b0010;
+        #10;
+        a = 4'b0011;
+        #10;
+        a = 4'b0100;
+        #10;
+        a = 4'b0101;
+        #10;
+        a = 4'b0110;
+        #10;
+        a = 4'b0111;
+        #10;
+        a = 4'b1000;
+        #10;
+        a = 4'b1001;
+        #10;
+        a = 4'b1010;
+        #10;
+        a = 4'b1011;
+        #10;
+        a = 4'b1100;
+        #10;
+        a = 4'b1101;
+        #10;
+        a = 4'b1110;
+        #10;
+        a = 4'b1111;
+        #10;
+
+        $display("Test Complete");
+        $finish;
+    end
+endmodule
+
+--------------------------------------------------
+File: q9_f.v
+--------------------------------------------------
+module encoder(
+    input[3:0] a,
+    output[1:0] y
+);
+
+    assign y[0] = (a[3]|a[1]);
+    assign y[1] = (a[3]|a[2]);
+
+endmodule
+
